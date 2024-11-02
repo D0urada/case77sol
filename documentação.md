@@ -1,0 +1,1 @@
+utilizando laravel breeze para criar as autenticações padrões do laravel
