@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use Faker\Factory as FakerFactory;
+use Faker\Generator as FakerGenerator;
 use Illuminate\Support\ServiceProvider;
+use App\Providers\BrazilianDocumentsProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -11,7 +14,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(FakerGenerator::class, function () {
+            $faker = FakerFactory::create();
+            $faker->addProvider(new BrazilianDocumentsProvider($faker));
+            return $faker;
+        });
     }
 
     /**
@@ -19,6 +26,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+
     }
 }

@@ -1,7 +1,21 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ClientController;
 use Illuminate\Support\Facades\Route;
+
+
+Route::prefix('admin')->name('admin.')->group(function () {
+
+	Route::get('/dashboard', function () {
+		return view('admin.dashboard');
+	})->name('dashboard');
+
+	require_once __DIR__ . '/modules/client.php';
+
+})->middleware(['auth', 'verified']);
+
+
 
 Route::get('/', function () {
     return view('welcome');
