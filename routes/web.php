@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(function () {
     Route::view('/dashboard', 'admin.dashboard')->name('dashboard');
 
-    // Apenas inclui o arquivo de rotas sem precisar aplicar o prefixo ou nome novamente
-    require_once __DIR__ . '/modules/client.php';
+    require_once __DIR__ . '/modules/clients.php';
+    require_once __DIR__ . '/modules/projects.php';
 });
 
 

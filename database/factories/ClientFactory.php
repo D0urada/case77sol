@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class ClientFactory extends Factory
 {
 	protected $model = Client::class;
-	
+
     /**
      * Define the model's default state.
      *
@@ -26,7 +26,7 @@ class ClientFactory extends Factory
             ]),
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
-            'phone' => $this->faker->optional()->phoneNumber(),
+            'phone' => $this->faker->optional()->brazilianPhoneNumber(),
         ];
     }
 }

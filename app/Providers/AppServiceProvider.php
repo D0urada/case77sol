@@ -6,6 +6,7 @@ use Faker\Factory as FakerFactory;
 use Faker\Generator as FakerGenerator;
 use Illuminate\Support\ServiceProvider;
 use App\Providers\BrazilianDocumentsProvider;
+use App\Providers\BrazilianPhoneNumberProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,7 +17,10 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(FakerGenerator::class, function () {
             $faker = FakerFactory::create();
+
             $faker->addProvider(new BrazilianDocumentsProvider($faker));
+            $faker->addProvider(new BrazilianPhoneNumberProvider($faker));
+
             return $faker;
         });
     }

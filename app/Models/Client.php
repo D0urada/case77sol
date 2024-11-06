@@ -20,6 +20,9 @@ class Client extends Model
         'phone',
     ];
 
-    // Define timestamp fields if you need custom names
-	const CREATED_AT = 'created_at';
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
+    }
+
 }

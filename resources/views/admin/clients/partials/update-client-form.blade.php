@@ -53,7 +53,7 @@
 				maxlength="18"
 				pattern="^(\d{3}\.\d{3}\.\d{3}-\d{2}|\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2})$"
 				name="cpfcnpj"
-				:value="old('cpfcnpj', $client->cpfcnpj)"
+				:value="old('cpfcnpj', applyCpfCnpjMask($client->cpfcnpj))"
                 required
                 autofocus
                 autocomplete="CPF/CNPJ" />
