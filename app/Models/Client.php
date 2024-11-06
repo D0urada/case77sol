@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Database\Factories\ClientFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Client extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
 	// protected $table = 'clients';
 
@@ -21,7 +22,7 @@ class Client extends Model
 
     // Define timestamp fields if you need custom names
 	const CREATED_AT = 'created_at';
- 
+
 	/**
 	 * Create a new factory instance for the model.
 	 */

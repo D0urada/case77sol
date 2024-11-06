@@ -7,16 +7,16 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ClientRepository implements ClientRepositoryInterface
 {
-	/**
+    /**
 	 * Retrieve paginated clients from the repository.
 	 *
 	 * This method retrieves all clients from the repository with pagination.
 	 * The paginated data includes clients and pagination information,
 	 * which can be directly passed to the view.
 	 *
-	 * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator The paginated list of clients.
+	 * @return LengthAwarePaginator The paginated list of clients.
 	 */
-	public function paginate(): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+	public function paginate(): LengthAwarePaginator
 	{
 		return Client::paginate(15);
 	}
@@ -41,10 +41,25 @@ class ClientRepository implements ClientRepositoryInterface
      *
      * @return Client The updated client.
      */
-    public function update(Client $client, array $data): Client
+    public function update(array $data, Client $client): Client
     {
         $client->update($data);
         return $client;
+    }
+
+    /**
+     * Retrieve a client by ID from the repository.
+     *
+     * This method fetches a client by its ID. If no client is found,
+     * it returns null.
+     *
+     * @param int $id The ID of the client to retrieve.
+     *
+     * @return Client|null The client instance or null if not found.
+     */
+    public function findById(int $id): ?Client
+    {
+        return Client::find($id);
     }
 
     /**

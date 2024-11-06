@@ -1,30 +1,31 @@
 <x-admin-layout>
-	<x-slot name="header">
-		<h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-		    {{ __('Clientes') }}
-		</h2>
-	</x-slot>
+    <x-slot name="header">
+        <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+            {{ __('Clientes') }}
+        </h2>
+    </x-slot>
 
-	<x-section>
-		<x-secondary-button
-			class="mb-5"
-			x-data=""
-			x-on:click.prevent="$dispatch('open-modal', 'create-client')"
-		>
-			{{ __('Cadastrar Cliente') }}
-		</x-secondary-button>
+    <x-section >
+        <x-alert/>
 
-		@include('admin.clients.search')
+        <x-secondary-button
+            class="mb-5"
+            x-data=""
+            x-on:click.prevent="$dispatch('open-modal', 'create-client')"
+        >
+            {{ __('Cadastrar Cliente') }}
+        </x-secondary-button>
 
-		@include('admin.clients.table')
+        @include('admin.clients.partials.search')
 
-		{{ $clients->links() }}
-	</x-section>
+        @include('admin.clients.partials.table', ['clients' => $clients])
 
-	@include('admin.clients.create-modal')
+        {{ $clients->links() }}
+    </x-section>
+
+    @include('admin.clients.partials.create-modal')
 
 </x-admin-layout>
-
 
 <!-- Include the JavaScript file -->
 @vite(['resources/js/admin/clients/index.js'])

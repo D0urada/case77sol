@@ -4,12 +4,13 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Providers\BrazilianDocumentsProvider;
+use Illuminate\Validation\Rule;
 
-class StoreClientRequest extends FormRequest
+class UpdateClientRequest extends FormRequest
 {
-	protected BrazilianDocumentsProvider $documentsProvider;
+    protected BrazilianDocumentsProvider $documentsProvider;
 
-	/**
+    /**
      * Create a new form request instance.
      *
      * @param BrazilianDocumentsProvider $documentsProvider
@@ -27,10 +28,9 @@ class StoreClientRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // Allow all requests to be validated.
+        // Allow all requests to be validated
         return true;
     }
-
 
     /**
      * Get the validation rules that apply to the request.
@@ -50,19 +50,18 @@ class StoreClientRequest extends FormRequest
                 'required',
                 'string',
                 'max:20',
-                'unique:clients,cpfcnpj,' . $clientId,
-                function($attribute, $value, $fail) {
-                    if (!$this->documentsProvider->isValidCpfOrCnpj($value))  {
+                Rule::unique('clients', 'cpfcnpj')->ignore($this->client, 'id'),
+                function ($attribute, $value, $fail) {
+                    if (!$this->documentsProvider->isValidCpfOrCnpj($value)) {
                         $fail("O $attribute campo deve ser um CPF ou CNPJ válido.");
                     }
                 },
             ],
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:clients,email,' . $clientId,
+            Rule::unique('clients', 'email')->ignore($this->client, 'id'),
             'phone' => 'nullable|string|max:15',
         ];
     }
-
 
     /**
      * Get custom error messages for validator errors.
@@ -76,11 +75,11 @@ class StoreClientRequest extends FormRequest
     public function messages(): array
     {
         return [
-			'cpfcnpj.required' => 'O CPF/CNPJ é obrigatório.',
-			'cpfcnpj.unique' => 'O CPF/CNPJ já está em uso.',
-			'name.required' => 'O nome é obrigatório.',
-			'email.required' => 'O e-mail é obrigatório.',
-			'email.unique' => 'O e-mail já está em uso.',
+            'cpfcnpj.required' => 'O CPF/CNPJ é obrigatório.',
+            'cpfcnpj.unique' => 'O CPF/CNPJ já está em uso.',
+            'name.required' => 'O nome é obrigatório.',
+            'email.required' => 'O e-mail é obrigatório.',
+            'email.unique' => 'O e-mail já está em uso.',
         ];
     }
 }

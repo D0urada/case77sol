@@ -1,9 +1,9 @@
 /**
  * import the JS files
  */
-import { setupStoreListener } from './partials/store';
+import { setupUpdateListener } from './partials/update';
 
 document.addEventListener('DOMContentLoaded', () => {
-    setupStoreListener();
+    setupUpdateListener();
 });
 

@@ -4,26 +4,13 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ClientController;
 use Illuminate\Support\Facades\Route;
 
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(function () {
+    Route::view('/dashboard', 'admin.dashboard')->name('dashboard');
 
-Route::prefix('admin')->name('admin.')->group(function () {
-
-	Route::get('/dashboard', function () {
-		return view('admin.dashboard');
-	})->name('dashboard');
-
-	require_once __DIR__ . '/modules/client.php';
-
-})->middleware(['auth', 'verified']);
-
-
-
-Route::get('/', function () {
-    return view('welcome');
+    // Apenas inclui o arquivo de rotas sem precisar aplicar o prefixo ou nome novamente
+    require_once __DIR__ . '/modules/client.php';
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -32,3 +19,13 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
+
+
