@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Client;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 class ClientRepository implements ClientRepositoryInterface
 {
@@ -20,6 +21,26 @@ class ClientRepository implements ClientRepositoryInterface
 	{
 		return Client::paginate(15);
 	}
+
+    /**
+     * Retrieve paginated clients that match the search query from the repository.
+     *
+     * This method retrieves clients from the repository that match the search query
+     * with pagination. The paginated data includes clients and pagination information,
+     * which can be directly passed to the view.
+     *
+     * @param string $searchQuery The search query to filter the clients with.
+     * @param int    $perPage     The number of items to paginate by.
+     *
+     * @return LengthAwarePaginator The paginated list of clients that match the search query.
+     */
+    public function search(string $searchQuery, int $perPage = 15): LengthAwarePaginator
+    {
+        return Client::where('name', 'like',  "%$searchQuery%")
+            ->orWhere('cpfcnpj', 'like', "%".removeCpfCnpjMask($searchQuery)."%")
+            ->orWhere('phone', 'like', "%$searchQuery%")
+            ->paginate($perPage);
+    }
 
     /**
      * Create a new client in the repository.

@@ -24,3 +24,20 @@ if (! function_exists('applyCpfCnpjMask')) {
         return $value;
     }
 }
+
+
+if (! function_exists('removeCpfCnpjMask')) {
+    /**
+     * Remove a máscara de CPF ou CNPJ do valor.
+     *
+     * @param string $value O valor do CPF ou CNPJ com máscara.
+     * @return string O valor sem a máscara, contendo apenas os números.
+     */
+    function removeCpfCnpjMask(string $value): string
+    {
+        // Remove todos os caracteres não numéricos
+        $value = preg_replace('/\D/', '', $value);
+
+        return $value;
+    }
+}

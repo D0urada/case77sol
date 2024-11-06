@@ -1,10 +1,11 @@
-<x-search class="mb-5" id="search-form">
+<x-search  method="get" id="search-client-form" action="{{ route('admin.clients.index') }}">
+    @method('GET')
 
-    <x-search-label for="clients-search"/>
+    <x-search-label for="search"/>
 
     <x-search-input
-        name="clients-search"
-        id="clients-search"
+        name="search"
+        id="search"
         placeholder="Nome, CPF/CNPJ, Email, Telefone..."
     />
     <x-input-error :messages="$errors->get('clients-search')" class="mt-2 error-message" />

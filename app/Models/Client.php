@@ -22,12 +22,4 @@ class Client extends Model
 
     // Define timestamp fields if you need custom names
 	const CREATED_AT = 'created_at';
-
-	/**
-	 * Create a new factory instance for the model.
-	 */
-	protected static function newFactory()
-	{
-		return ClientFactory::new();
-	}
 }

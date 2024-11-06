@@ -43,10 +43,13 @@ class ClientController extends Controller
      *
      * @return \Illuminate\View\View The clients list view with the clients data.
      */
-    public function index(): \Illuminate\View\View
+    public function index(Request $request): \Illuminate\View\View
     {
-        // Retrieve a paginated list of clients using the client repository
-        $clients = $this->clientRepository->paginate(15);
+        if(!is_null($request->search) ) {
+            $clients = $this->clientRepository->search($request->search, 15);
+        } else {
+            $clients = $this->clientRepository->paginate(15);
+        }
 
         // Render the clients list view with the clients data
         return view('admin.clients.index', compact('clients'));
