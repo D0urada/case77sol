@@ -72,8 +72,24 @@ class ProjectController extends Controller
     /**
      * Display a listing of the projects.
      *
-     * @param Request $request
-     * @return \Illuminate\View\View
+     * @OA\Get(
+     *     path="/admin/projects",
+     *     tags={"Projects"},
+     *     summary="List all projects",
+     *     description="Retrieve a paginated list of all projects",
+     *     @OA\Parameter(
+     *         name="search",
+     *         in="query",
+     *         required=false,
+     *         description="Search term for filtering projects",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="A list of projects",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Project"))
+     *     )
+     * )
      */
     public function index(Request $request): View
     {
@@ -87,10 +103,17 @@ class ProjectController extends Controller
     /**
      * Show the form for creating a new project.
      *
-     * This function retrieves all necessary data for creating a project, including clients, UFs,
-     * equipment, and installation types, and then returns the view for project creation.
-     *
-     * @return \Illuminate\View\View
+     * @OA\Get(
+     *     path="/admin/projects/create",
+     *     tags={"Projects"},
+     *     summary="Show project creation form",
+     *     description="Displays the form for creating a new project",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Project creation form",
+     *         @OA\JsonContent(ref="#/components/schemas/Project")
+     *     )
+     * )
      */
     public function create(): View
     {
@@ -113,17 +136,29 @@ class ProjectController extends Controller
     /**
      * Store a newly created project in the database.
      *
-     * This method handles the incoming request to store a project.
-     * It validates the request data using the StoreProjectRequest and
-     * uses the project repository to create the project.
-     * If the creation is successful, it returns a JSON response with the
-     * created project data and the HTTP status code 201.
-     * If the creation fails, it returns a JSON response with an error
-     * message and the appropriate HTTP status code.
-     *
-     * @param StoreProjectRequest $request The validated request data.
-     *
-     * @return JsonResponse The JSON response with the created project data or an error message.
+     * @OA\Post(
+     *     path="/admin/projects",
+     *     tags={"Projects"},
+     *     summary="Create a new project",
+     *     description="Stores a new project in the database",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/StoreProjectRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Project created successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/Project")
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
      */
     public function store(StoreProjectRequest $request): JsonResponse
     {
@@ -164,14 +199,28 @@ class ProjectController extends Controller
     /**
      * Display the specified project.
      *
-     * This method handles the incoming request to show a project.
-     * It uses the project repository to retrieve the project data
-     * and renders the projects show view with the project data.
-     * If the project is not found, it returns a JSON response with an error message.
-     *
-     * @param int $projectId The project ID to retrieve.
-     *
-     * @return View The projects show view with the project data.
+     * @OA\Get(
+     *     path="/admin/projects/{projectId}",
+     *     tags={"Projects"},
+     *     summary="Show project details",
+     *     description="Displays details of the specified project",
+     *     @OA\Parameter(
+     *         name="projectId",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the project to retrieve",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Project details",
+     *         @OA\JsonContent(ref="#/components/schemas/Project")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Project not found"
+     *     )
+     * )
      */
     public function show(int $projectId): View
     {
@@ -205,15 +254,36 @@ class ProjectController extends Controller
     /**
      * Update the specified project in the database.
      *
-     * This method handles the incoming request to update a project.
-     * It attempts to update the project using the project repository.
-     * If the project is not found, it returns a JSON response with a 404 error message.
-     * If the update fails, it returns a JSON response with an error message and the appropriate HTTP status code.
-     *
-     * @param Request $request The request instance containing the validated project data.
-     * @param Project $project The project instance to be updated.
-     *
-     * @return JsonResponse The JSON response with the updated project data or an error message.
+     * @OA\Put(
+     *     path="/admin/projects/{projectId}",
+     *     tags={"Projects"},
+     *     summary="Update an existing project",
+     *     description="Updates an existing project",
+     *     @OA\Parameter(
+     *         name="projectId",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the project to update",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/UpdateProjectRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Project updated successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/Project")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Project not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
      */
     public function update(Request $request, Project $project): JsonResponse
     {
@@ -257,15 +327,31 @@ class ProjectController extends Controller
     /**
      * Remove the specified project from storage.
      *
-     * This method handles the incoming request to delete a project.
-     * It attempts to delete the project using the project repository.
-     * If the project is not found, it redirects to the projects list route
-     * with an error message. If the deletion fails, it returns a JSON response
-     * with an error message and the appropriate HTTP status code.
-     *
-     * @param int $projectId The project ID to delete.
-     *
-     * @return RedirectResponse The redirect response with a success or error message.
+     * @OA\Delete(
+     *     path="/admin/projects/{projectId}",
+     *     tags={"Projects"},
+     *     summary="Delete a project",
+     *     description="Deletes a project from the database",
+     *     @OA\Parameter(
+     *         name="projectId",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the project to delete",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Project deleted successfully"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Project not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
      */
     public function destroy(int $projectId): RedirectResponse
     {
