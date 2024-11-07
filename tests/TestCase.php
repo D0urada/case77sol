@@ -3,13 +3,14 @@
 namespace Tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Faker\Factory as FakerFactory;
 use Faker\Generator as FakerGenerator;
 use App\Providers\BrazilianDocumentsProvider;
 
 abstract class TestCase extends BaseTestCase
 {
-    use CreatesApplication;
+    use CreatesApplication, RefreshDatabase;
 
     protected FakerGenerator $faker;
 
