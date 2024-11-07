@@ -6,7 +6,7 @@ use App\Http\Requests\Admin\StoreClientRequest;
 use App\Http\Requests\Admin\UpdateClientRequest;
 use Illuminate\Http\Request;
 use App\Models\Client;
-use App\Repositories\ClientRepositoryInterface;
+use App\Repositories\Interfaces\ClientRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;

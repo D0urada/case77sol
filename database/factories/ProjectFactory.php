@@ -30,47 +30,24 @@ class ProjectFactory extends Factory
         // quantity between 1 and 10
         $randomEquipments = collect($equipments)
             ->random(rand(1, 5)) // Select a random number of equipment between 1 and 5
-            ->mapWithKeys(function ($equipment) {
-                // For each equipment, return an array with the equipment name
-                // as the key, and a random quantity between 1 and 10 as the value
-                return [$equipment => rand(1, 10)];
+            ->map(function ($equipment) {
+                return [
+                    'name' => $equipment,
+                    'quantity' => rand(1, 10),
+                ];
             })
             ->toArray();
 
+        // Convert the equipment array to JSON
+        $equipmentJson = json_encode($randomEquipments);
+
         return [
-            /**
-             * Generate a random project name by combining a company name
-             * with the word "Project"
-             */
             'name' => $this->faker->company . ' Project',
-
-            /**
-             * Generate a random description for the project
-             */
             'description' => $this->faker->optional()->paragraph,
-
-            /**
-             * Associate a random client with the project. The client is
-             * created using the Client factory.
-             */
             'client_id' => Client::factory(),
-
-            /**
-             * Set the installation type to a random installation type from
-             * the InstallationTypes table
-             */
             'installation_type' => InstallationType::inRandomOrder()->first()->name,
-
-            /**
-             * Set the UF to a random UF from the Ufs table
-             */
             'location_uf' => Uf::inRandomOrder()->first()->acronym,
-
-            /**
-             * Set the equipment to a random set of equipment, with each
-             * equipment having a random quantity between 1 and 10
-             */
-            'equipment' => $randomEquipments,
+            'equipment' => $randomEquipments,  // Garante que o formato seja um array de objetos com name e quantity
         ];
     }
 }

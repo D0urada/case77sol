@@ -1,4 +1,4 @@
-<x-search class="pb-4"  method="get" id="search-client-form" action="{{ route('admin.clients.index') }}">
+<x-search class="pb-4"  method="get" id="search-project-form" action="{{ route('admin.projects.index') }}">
     @method('GET')
 
     <x-search-label for="search"/>
@@ -9,7 +9,7 @@
         :value="old('search')"
         placeholder="Nome, CPF/CNPJ, Email, Telefone..."
     />
-    <x-input-error :messages="$errors->get('clients-search')" class="mt-2 error-message" />
+    <x-input-error :messages="$errors->get('search')" class="mt-2 error-message" />
 
     <x-search-button>
         {{ __('Procurar') }}

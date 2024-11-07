@@ -19,6 +19,6 @@ class ProjectSeeder extends Seeder
     public function run(): void
     {
         // Generate 50 projects using the factory and save them to the database
-        Project::factory()->count(50)->create();
+        Project::factory()->count(5)->create();
     }
 }

@@ -2,43 +2,44 @@
     <x-slot name="tableHead">
         <tr>
             <th scope="col" class="px-6 py-3">
-                CPF/CNPJ
-            </th>
-            <th scope="col" class="px-6 py-3">
                 Nome
             </th>
             <th scope="col" class="px-6 py-3">
-                Email
+                Cliente
             </th>
             <th scope="col" class="px-6 py-3">
-                Telefone
+                Instalação
             </th>
             <th scope="col" class="px-6 py-3 text-center">
-                Ações
+                UF
+            </th>
+
+            <th scope="col" class="px-6 py-3 text-center">
+                Detalhes
             </th>
         </tr>
     </x-slot>
     <x-slot name="tableBody">
-        @forelse ($clients as $client)
+        @forelse ($projects as $project)
             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    {{ applyCpfCnpjMask($client->cpfcnpj) }}
-                </th>
-                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    {{ $client->name }}
+                    {{ $project->name }}
                 </th>
                 <td class="px-6 py-4">
-                    {{ $client->email }}
+                    {{ $project->client->name }}
                 </td>
                 <td class="px-6 py-4">
-                    {{ $client->phone }}
+                    {{ $project->installation_type }}
                 </td>
                 <td class="px-6 py-4 text-center">
-                    <a href="{{ route('admin.clients.show', $client->id) }}">
+                    {{ $project->location_uf }}
+                </td>
+                <td class="px-6 py-4 text-center">
+                    <a href="{{ route('admin.projects.show', $project->id) }}">
                         <x-outline-button
-                            title="Ver detalhes do Cliente"
-                            class="mb-5 edit-client-button"
-                            data-client-id="{{ $client->id }}"
+                            title="Ver detalhes do Projeto"
+                            class="mb-5 edit-project-button"
+                            data-project-id="{{ $project->id }}"
                         >
                             <x-slot name="dark">
                                 <svg class="w-4 h-4 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
