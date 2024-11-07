@@ -110,9 +110,25 @@ class ProjectController extends Controller
         return view('admin.projects.create', compact('clients', 'ufList', 'equipmentList', 'installationTypeList'));
     }
 
-    public function store(StoreProjectRequest $request)
+    /**
+     * Store a newly created project in the database.
+     *
+     * This method handles the incoming request to store a project.
+     * It validates the request data using the StoreProjectRequest and
+     * uses the project repository to create the project.
+     * If the creation is successful, it returns a JSON response with the
+     * created project data and the HTTP status code 201.
+     * If the creation fails, it returns a JSON response with an error
+     * message and the appropriate HTTP status code.
+     *
+     * @param StoreProjectRequest $request The validated request data.
+     *
+     * @return JsonResponse The JSON response with the created project data or an error message.
+     */
+    public function store(StoreProjectRequest $request): JsonResponse
     {
         try {
+            // Prepare the data array from the request
             $data = [
                 'name' => $request->name,
                 'description' => $request->description,
@@ -122,20 +138,22 @@ class ProjectController extends Controller
                 'equipment' => $request->equipment,
             ];
 
+            // Create the project using the project repository
             $project = $this->projectRepository->create($data);
 
-            // Retorna a resposta com o projeto criado
+            // Return a JSON response with the created project data
             return response()->json([
                 'message' => 'Projeto cadastrado com sucesso!',
                 'project' => $project,
             ], Response::HTTP_CREATED);
 
         } catch (Throwable $e) {
-            // Handle the exception and return a JSON response with an error message
+            // Determine the appropriate status code based on the exception type
             $statusCode = $e instanceof QueryException
                 ? Response::HTTP_UNPROCESSABLE_ENTITY
                 : Response::HTTP_INTERNAL_SERVER_ERROR;
 
+            // Handle the exception and return a JSON response with an error message
             return response()->json([
                 'message' => 'Erro ao cadastrar o projeto.',
                 'error' => $e->getMessage(),
@@ -184,32 +202,51 @@ class ProjectController extends Controller
         return view('admin.projects.show', compact('project', 'clients', 'ufList', 'equipmentList', 'initialEquipmentList', 'installationTypeList'));
     }
 
-
+    /**
+     * Update the specified project in the database.
+     *
+     * This method handles the incoming request to update a project.
+     * It attempts to update the project using the project repository.
+     * If the project is not found, it returns a JSON response with a 404 error message.
+     * If the update fails, it returns a JSON response with an error message and the appropriate HTTP status code.
+     *
+     * @param Request $request The request instance containing the validated project data.
+     * @param Project $project The project instance to be updated.
+     *
+     * @return JsonResponse The JSON response with the updated project data or an error message.
+     */
     public function update(Request $request, Project $project): JsonResponse
     {
         try {
+            // Validate the incoming request data
             $validatedData = $request->validated();
 
+            // Retrieve the existing project from the repository
             $existingProject = $this->projectRepository->findById($project->id);
 
             if (!$existingProject) {
+                // Return a JSON response with an error message if the project is not found
                 return response()->json([
                     'message' => 'Projeto não foi encontrado.',
                 ], Response::HTTP_NOT_FOUND);
             }
 
+            // Update the project using the validated data
             $updatedProject = $this->projectRepository->update($validatedData, $project);
 
+            // Return a JSON response with the updated project data
             return response()->json([
                 'message' => 'Projeto atualizado com sucesso!',
                 'project' => $updatedProject,
             ], Response::HTTP_OK);
 
         } catch (Throwable $exception) {
+            // Determine the appropriate status code based on the exception type
             $statusCode = $exception instanceof QueryException
                 ? Response::HTTP_UNPROCESSABLE_ENTITY
                 : Response::HTTP_INTERNAL_SERVER_ERROR;
 
+            // Handle the exception and return a JSON response with an error message
             return response()->json([
                 'message' => 'Erro ao editar o projeto.',
                 'error' => $exception->getMessage(),

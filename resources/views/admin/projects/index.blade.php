@@ -23,6 +23,3 @@
     </x-section>
 
 </x-admin-layout>
-
-<!-- Include the JavaScript file -->
-@vite(['resources/js/admin/projects/index.js'])

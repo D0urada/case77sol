@@ -19,26 +19,37 @@ export function showErrorMessages(errors) {
     }
 }
 
+
 /**
- * Limpa as mensagens de erro do formulário.
+ * Remove as mensagens de erro do formul rio.
  */
 export function clearErrorMessages() {
-    document.querySelectorAll('.error-message').forEach(el => el.remove());
+    // Seleciona todos os elementos com a classe 'error-message'
+    const errorMessages = document.querySelectorAll('.error-message');
+
+    // Remove todos os elementos encontrados
+    errorMessages.forEach(el => el.remove());
 }
 
 /**
- * Exibe a mensagem de sucesso após o envio do formulário.
- * @param {string} message - Mensagem de sucesso.
+ * Displays a success message in an alert element.
+ * @param {string} message - The success message to display.
  */
 export function showSuccessMessage(message) {
+    // Get the alert div and message elements by their IDs
     const alertDiv = document.getElementById('alert-success');
     const alertMessage = document.getElementById('alert-message');
 
+    // Check if the alert elements exist
     if (alertDiv && alertMessage) {
+        // Set the text content of the alert message
         alertMessage.textContent = message;
+
+        // Show the alert div by removing the 'hidden' class and adding 'opacity-100'
         alertDiv.classList.remove('hidden');
         alertDiv.classList.add('opacity-100');
 
+        // After 1.5 seconds, fade out the alert by adding 'opacity-0' and removing 'opacity-100'
         setTimeout(() => {
             alertDiv.classList.add('opacity-0');
             alertDiv.classList.remove('opacity-100');
@@ -46,14 +57,18 @@ export function showSuccessMessage(message) {
     }
 }
 
+
 /**
- * Trata erros de envio do formulário.
- * @param {Error} error - O erro ocorrido durante a submissão.
+ * Handles any errors that occur when submitting the form.
+ * @param {Error} error - The error object thrown by the form submission.
  */
 export function handleFormError(error) {
+    // If the error object contains a response property with a data property containing errors,
+    // show the error messages on the form.
     if (error.response && error.response.data.errors) {
         showErrorMessages(error.response.data.errors);
     } else {
+        // Log the error to the console.
         console.error('Erro ao submeter o formulário:', error);
     }
 }
