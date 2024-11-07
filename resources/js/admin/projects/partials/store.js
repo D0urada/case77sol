@@ -1,8 +1,7 @@
-// store.js
 import axios from 'axios';
 import { handleFormError, showErrorMessages, clearErrorMessages, showSuccessMessage } from '../../notifications.js';
 import { setupMasksListener } from '../../masks.js';
-import { setupEquipmentListener, addInputField, equipmentList } from './equipment.js';
+import { setupEquipmentListener, equipmentList } from './equipment.js';
 
 export const setupStoreListener = () => {
     setupMasksListener();
@@ -33,9 +32,6 @@ async function handleFormSubmit(event) {
         name: equipment,
         quantity: equipmentList[equipment]
     }));
-
-    // Verifica se a estrutura de equipmentData está correta
-    console.log(equipmentData);
 
     // Adiciona o array de objetos de equipamentos como uma string JSON ao FormData
     formData.append('equipment', JSON.stringify(equipmentData));
