@@ -12,7 +12,7 @@ class StoreClientRequest extends FormRequest
 	/**
      * Create a new form request instance.
      *
-     * @param BrazilianDocumentsProvider $documentsProvider
+     * @param BrazilianDocumentsProvider $documentsProvider The provider for the brazilian documents.
      */
     public function __construct(BrazilianDocumentsProvider $documentsProvider)
     {
@@ -23,14 +23,16 @@ class StoreClientRequest extends FormRequest
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return bool
+     * This method always returns true, so that any request can be validated.
+     * The authorization is handled by the middleware, before the request
+     * reaches this class.
+     *
+     * @return bool Always true.
      */
     public function authorize(): bool
     {
-        // Allow all requests to be validated.
         return true;
     }
-
 
     /**
      * Get the validation rules that apply to the request.
@@ -47,22 +49,51 @@ class StoreClientRequest extends FormRequest
 
         return [
             'cpfcnpj' => [
+                // The CPFCNPJ is required.
                 'required',
+                // The CPFCNPJ must be a string.
                 'string',
+                // The CPFCNPJ must not be longer than 20 characters.
                 'max:20',
+                // The CPFCNPJ must be unique. If there is an existing client with
+                // the same CPFCNPJ, the validation will fail.
                 'unique:clients,cpfcnpj,' . $clientId,
+                // The CPFCNPJ is validated using the BrazilianDocumentsProvider.
                 function($attribute, $value, $fail) {
                     if (!$this->documentsProvider->isValidCpfOrCnpj($value))  {
+                        // If the CPFCNPJ is not valid, a message is added to the
+                        // validation errors.
                         $fail("O $attribute campo deve ser um CPF ou CNPJ válido.");
                     }
                 },
             ],
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:clients,email,' . $clientId,
-            'phone' => 'nullable|string|max:15',
+            'name' => [
+                // The name is required.
+                'required',
+                // The name must be a string.
+                'string',
+                // The name must not be longer than 255 characters.
+                'max:255',
+            ],
+            'email' => [
+                // The email is required.
+                'required',
+                // The email must be an email.
+                'email',
+                // The email must be unique. If there is an existing client with
+                // the same email, the validation will fail.
+                'unique:clients,email,' . $clientId,
+            ],
+            'phone' => [
+                // The phone is not required.
+                'nullable',
+                // The phone must be a string.
+                'string',
+                // The phone must not be longer than 15 characters.
+                'max:15',
+            ],
         ];
     }
-
 
     /**
      * Get custom error messages for validator errors.
@@ -75,12 +106,20 @@ class StoreClientRequest extends FormRequest
      */
     public function messages(): array
     {
+        // This array contains custom error messages for validator errors.
         return [
-			'cpfcnpj.required' => 'O CPF/CNPJ é obrigatório.',
-			'cpfcnpj.unique' => 'O CPF/CNPJ já está em uso.',
-			'name.required' => 'O nome é obrigatório.',
-			'email.required' => 'O e-mail é obrigatório.',
-			'email.unique' => 'O e-mail já está em uso.',
+            // The CPF/CNPJ is required.
+            'cpfcnpj.required' => 'O CPF/CNPJ é obrigatório.',
+            // The CPF/CNPJ must be unique. If there is an existing client with
+            // the same CPF/CNPJ, the validation will fail.
+            'cpfcnpj.unique' => 'O CPF/CNPJ já está em uso.',
+            // The name is required.
+            'name.required' => 'O nome é obrigatório.',
+            // The email is required.
+            'email.required' => 'O e-mail é obrigatório.',
+            // The email must be unique. If there is an existing client with
+            // the same email, the validation will fail.
+            'email.unique' => 'O e-mail já está em uso.',
         ];
     }
 }

@@ -13,22 +13,33 @@ class UpdateClientRequest extends FormRequest
     /**
      * Create a new form request instance.
      *
-     * @param BrazilianDocumentsProvider $documentsProvider
+     * This constructor initializes the form request with a BrazilianDocumentsProvider.
+     * It sets up the necessary dependencies for handling Brazilian document validation.
+     *
+     * @param BrazilianDocumentsProvider $documentsProvider An instance of BrazilianDocumentsProvider.
      */
     public function __construct(BrazilianDocumentsProvider $documentsProvider)
     {
+        // Call the parent constructor to ensure proper initialization
         parent::__construct();
+
+        // Assign the documents provider to the instance variable for later use
         $this->documentsProvider = $documentsProvider;
     }
 
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return bool
+     * This method is responsible for determining whether the user has
+     * the necessary permissions to perform the action associated with
+     * this request. By default, all users are authorized to make this
+     * request, as indicated by the return value of true.
+     *
+     * @return bool True if the user is authorized, otherwise false.
      */
     public function authorize(): bool
     {
-        // Allow all requests to be validated
+        // Authorize all users to make this request
         return true;
     }
 
@@ -45,20 +56,34 @@ class UpdateClientRequest extends FormRequest
     {
         $clientId = $this->route('client');
 
+        // Validation rules for the request
         return [
+            // CPF/CNPJ must be a unique string of 20 characters
             'cpfcnpj' => [
                 'required',
                 'string',
                 'max:20',
+                // Ignore the current client when validating uniqueness
                 Rule::unique('clients', 'cpfcnpj')->ignore($this->client, 'id'),
+                // Validate if the CPF/CNPJ is valid
                 function ($attribute, $value, $fail) {
                     if (!$this->documentsProvider->isValidCpfOrCnpj($value)) {
                         $fail("O $attribute campo deve ser um CPF ou CNPJ válido.");
                     }
                 },
             ],
+            // Name must be a required string with a maximum of 255 characters
             'name' => 'required|string|max:255',
-            Rule::unique('clients', 'email')->ignore($this->client, 'id'),
+            // Email must be a required string with a maximum of 255 characters and unique
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                // Ignore the current client when validating uniqueness
+                Rule::unique('clients', 'email')->ignore($this->client, 'id'),
+            ],
+            // Phone must be an optional string with a maximum of 15 characters
             'phone' => 'nullable|string|max:15',
         ];
     }
@@ -68,18 +93,21 @@ class UpdateClientRequest extends FormRequest
      *
      * This method returns an array of custom error messages that are used
      * during the validation process. These messages correspond to validation
-     * rule failures for specific fields in the request.
+     * rule failures for specific fields in the request. Each key in the array
+     * represents a validation rule, and the corresponding value is the error
+     * message displayed when that rule fails.
      *
      * @return array<string, string> An array of custom error messages.
      */
     public function messages(): array
     {
+        // Return an associative array of validation error messages
         return [
-            'cpfcnpj.required' => 'O CPF/CNPJ é obrigatório.',
-            'cpfcnpj.unique' => 'O CPF/CNPJ já está em uso.',
-            'name.required' => 'O nome é obrigatório.',
-            'email.required' => 'O e-mail é obrigatório.',
-            'email.unique' => 'O e-mail já está em uso.',
+            'cpfcnpj.required' => 'O CPF/CNPJ é obrigatório.', // Message for missing CPF/CNPJ
+            'cpfcnpj.unique' => 'O CPF/CNPJ já está em uso.',  // Message for duplicate CPF/CNPJ
+            'name.required' => 'O nome é obrigatório.',        // Message for missing name
+            'email.required' => 'O e-mail é obrigatório.',     // Message for missing email
+            'email.unique' => 'O e-mail já está em uso.',      // Message for duplicate email
         ];
     }
 }
