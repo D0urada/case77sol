@@ -54,8 +54,11 @@ async function submitForm(formAction, formData) {
         clearErrorMessages();
         showSuccessMessage(response.data.message);
 
-        setTimeout(() => location.reload(), 2000);
-    } catch (error) {
+        // Usando window.location.href para redirecionar para a rota desejada
+        setTimeout(() => {
+            window.location.href = '/admin/projects'; // Redireciona para a página de projetos
+        }, 2000);
+        } catch (error) {
         handleFormError(error);
     }
 }
