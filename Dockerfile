@@ -3,7 +3,7 @@ FROM php:8.3-fpm
 ARG user=case77sol
 ARG uid=1000
 
-# Install system dependencies
+# Install system dependencies and Node.js
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -11,10 +11,15 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     zip \
-    unzip
-
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+    unzip \
+    lsb-release \
+    ca-certificates \
+    gnupg \
+    # Adiciona o repositório do Node.js e instala Node.js e npm
+    && curl -sL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
+    # Limpa o cache do apt-get
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd sockets
