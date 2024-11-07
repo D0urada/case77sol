@@ -19,6 +19,12 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @OA\PathItem(
+ *     path="/admin/projects",
+ *     description="Endpoints relacionados ao projeto"
+ * )
+ */
 class ProjectController extends Controller
 {
     /**
@@ -70,39 +76,29 @@ class ProjectController extends Controller
     }
 
     /**
-     * Display a listing of the projects.
+     * Display a listing of projects.
      *
-     * @OA\Get(
-     *     path="/admin/projects",
-     *     tags={"Projects"},
-     *     summary="List all projects",
-     *     description="Retrieve a paginated list of all projects",
-     *     @OA\Parameter(
-     *         name="search",
-     *         in="query",
-     *         required=false,
-     *         description="Search term for filtering projects",
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="A list of projects",
-     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Project"))
-     *     )
-     * )
+     * This method fetches a list of projects, either filtered by a search query
+     * or paginated, from the project repository and returns the view with the projects.
+     *
+     * @param Request $request The HTTP request instance.
+     *
+     * @return View The view displaying the list of projects.
      */
     public function index(Request $request): View
     {
+        // Check if a search query is present in the request
         $projects = !is_null($request->search)
+            // If a search query is present, search projects with pagination
             ? $this->projectRepository->search($request->search, 15)
+            // Otherwise, retrieve paginated projects
             : $this->projectRepository->paginate(15);
 
+        // Return the view with the list of projects
         return view('admin.projects.index', compact('projects'));
     }
 
     /**
-     * Show the form for creating a new project.
-     *
      * @OA\Get(
      *     path="/admin/projects/create",
      *     tags={"Projects"},
@@ -114,6 +110,14 @@ class ProjectController extends Controller
      *         @OA\JsonContent(ref="#/components/schemas/Project")
      *     )
      * )
+     *
+     * Show the form for creating a new project.
+     *
+     * This method retrieves all clients, UFs, equipment and installation types
+     * from the respective repositories and returns the view with the data
+     * needed to create a project.
+     *
+     * @return View The view displaying the form for creating a new project.
      */
     public function create(): View
     {
@@ -134,8 +138,6 @@ class ProjectController extends Controller
     }
 
     /**
-     * Store a newly created project in the database.
-     *
      * @OA\Post(
      *     path="/admin/projects",
      *     tags={"Projects"},
@@ -159,6 +161,16 @@ class ProjectController extends Controller
      *         description="Internal server error"
      *     )
      * )
+     *
+     * Store a newly created project in storage.
+     *
+     * This method handles the creation of a new project by validating
+     * the request data, storing the project using the repository, and
+     * returning a JSON response with the created project details.
+     *
+     * @param StoreProjectRequest $request The request instance containing project data.
+     *
+     * @return JsonResponse The JSON response with project creation status.
      */
     public function store(StoreProjectRequest $request): JsonResponse
     {
@@ -221,10 +233,22 @@ class ProjectController extends Controller
      *         description="Project not found"
      *     )
      * )
+     *
+     * @param int $projectId The ID of the project to display.
+     *
+     * @return View The view with the project details.
      */
     public function show(int $projectId): View
     {
+        // Retrieve the project by ID
         $project = $this->projectRepository->findById($projectId);
+
+        if (!$project) {
+            // Return a JSON response with an error message if the project is not found
+            return response()->json([
+                'message' => 'Projeto não encontrado.',
+            ], Response::HTTP_NOT_FOUND);
+        }
 
         // Retrieve all clients
         $clients = $this->projectRepository->all();
@@ -238,27 +262,19 @@ class ProjectController extends Controller
         // Retrieve all installation types
         $installationTypeList = $this->installationTypeRepository->all();
 
+        // Encode the project's equipment list as a JSON string
         $initialEquipmentList = json_encode($project->equipment);
-
-        if (!$project) {
-            // Return a JSON response with an error message
-            return response()->json([
-                'message' => 'Projeto não encontrado.',
-            ], Response::HTTP_NOT_FOUND);
-        }
 
         // Render the projects show view with the project data
         return view('admin.projects.show', compact('project', 'clients', 'ufList', 'equipmentList', 'initialEquipmentList', 'installationTypeList'));
     }
 
     /**
-     * Update the specified project in the database.
-     *
      * @OA\Put(
      *     path="/admin/projects/{projectId}",
      *     tags={"Projects"},
-     *     summary="Update an existing project",
-     *     description="Updates an existing project",
+     *     summary="Update a project",
+     *     description="Updates a project in the repository",
      *     @OA\Parameter(
      *         name="projectId",
      *         in="path",
@@ -268,22 +284,32 @@ class ProjectController extends Controller
      *     ),
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/UpdateProjectRequest")
+     *         @OA\JsonContent(
+     *             ref="#/components/schemas/UpdateProjectRequest"
+     *         )
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Project updated successfully",
-     *         @OA\JsonContent(ref="#/components/schemas/Project")
+     *         description="Project updated successfully"
      *     ),
      *     @OA\Response(
      *         response=404,
      *         description="Project not found"
      *     ),
      *     @OA\Response(
+     *         response=422,
+     *         description="Validation error"
+     *     ),
+     *     @OA\Response(
      *         response=500,
      *         description="Internal server error"
      *     )
      * )
+     *
+     * @param Request $request The request instance containing the update data.
+     * @param Project $project The project instance to be updated.
+     *
+     * @return JsonResponse The JSON response with the update result.
      */
     public function update(Request $request, Project $project): JsonResponse
     {
@@ -297,8 +323,9 @@ class ProjectController extends Controller
             if (!$existingProject) {
                 // Return a JSON response with an error message if the project is not found
                 return response()->json([
-                    'message' => 'Projeto não foi encontrado.',
+                    'message' => 'Projeto n o encontrado.',
                 ], Response::HTTP_NOT_FOUND);
+
             }
 
             // Update the project using the validated data
@@ -325,13 +352,13 @@ class ProjectController extends Controller
     }
 
     /**
-     * Remove the specified project from storage.
+     * Delete a project from the repository.
      *
      * @OA\Delete(
      *     path="/admin/projects/{projectId}",
      *     tags={"Projects"},
      *     summary="Delete a project",
-     *     description="Deletes a project from the database",
+     *     description="Deletes a project from the repository",
      *     @OA\Parameter(
      *         name="projectId",
      *         in="path",
@@ -346,12 +373,12 @@ class ProjectController extends Controller
      *     @OA\Response(
      *         response=404,
      *         description="Project not found"
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Internal server error"
      *     )
      * )
+     *
+     * @param int $projectId The ID of the project to delete
+     *
+     * @return RedirectResponse The redirect response with the result of the deletion
      */
     public function destroy(int $projectId): RedirectResponse
     {
@@ -359,6 +386,7 @@ class ProjectController extends Controller
             // Retrieve the project instance from the project repository
             $project = $this->projectRepository->findById($projectId);
 
+            // Check if the project was found
             if (!$project) {
                 // Return a redirect response with an error message
                 return redirect()->route('admin.projects.index')

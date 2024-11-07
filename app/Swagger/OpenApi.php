@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Swagger;
+
+use OpenApi\Annotations as OA;
 
 /**
  * @OA\Info(
@@ -19,7 +21,3 @@ namespace App\Http\Controllers;
  *     )
  * )
  */
-abstract class Controller
-{
-    //
-}

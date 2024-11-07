@@ -73,6 +73,9 @@
 14. Acesse o banco de dados:  
     [http://localhost:8080](http://localhost:8080)
 
+15. Documentação:  
+    [http://localhost:8000/api/documentation](http://localhost:8000/api/documentation)
+
 ---
 
 ### Observações:
@@ -82,3 +85,5 @@
 - Para o restante, tentei seguir padrões com os quais já trabalhei no Laravel, como o uso de *repository* e *interface*. Pessoalmente, atualmente, gosto de utilizar o Blade para componentização e prefiro manter a modularização do frontend mais simples. Não vejo necessidade de usar Vue para um projeto mais simples.
 
 - Também utilizei o Tailwind, que já vem no Laravel e gosto bastante, e a biblioteca open-source de componentes Flowbite.
+
+- Aproveitei que gostod e retornar a maior parte do back como response, mesmo em uma aplicação sem separação de front e back, e apliquei oswagger a alguns retornos de CRUD que eram de response e não redirect ou view.
