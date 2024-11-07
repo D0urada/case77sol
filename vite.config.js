@@ -9,7 +9,6 @@ export default defineConfig({
                 'resources/js/app.js',
 				'resources/js/admin/clients/index.js',
 				'resources/js/admin/clients/show.js',
-                'resources/js/admin/projects/index.js',
 				'resources/js/admin/projects/create.js',
 				'resources/js/admin/projects/show.js',
             ],
