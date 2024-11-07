@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -14,12 +14,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // User::factory()->create();
 
-        User::factory()->create([
-            'name' => 'case77sol',
-            'email' => 'case77sol@case77sol.com',
-            'password' => Hash::make('password'),
+        // Run the seeders in the correct order.
+        $this->call([
+            UserSeeder::class,
+            UfsSeeder::class, // First, seed the Ufs table.
+            InstallationTypeSeeder::class, // Then, seed the InstallationTypes table.
+            ClientSeeder::class, // After that, seed the Clients table.
+            EquipmentSeeder::class, // EquipmentSeeder have to also be added.
+            ProjectSeeder::class, // Finally, seed the Projects table.
         ]);
     }
 }

@@ -245,7 +245,7 @@ class ClientController extends Controller
                 ], Response::HTTP_BAD_REQUEST);
             }
 
-            $clients = $this->clientRepository->search($query)->get(['id', 'name', 'email']);
+            $clients = $this->clientRepository->search($query)->get();
 
             if (!$clients) {
                 return response()->json([
