@@ -19,9 +19,9 @@ class ClientRepository implements ClientRepositoryInterface
 	 *
 	 * @return LengthAwarePaginator The paginated list of clients.
 	 */
-	public function paginate(): LengthAwarePaginator
+	public function paginate(int $int = 15): LengthAwarePaginator
 	{
-		return Client::paginate(15);
+		return Client::paginate($int);
 	}
 
     public function search(string $searchQuery): Builder

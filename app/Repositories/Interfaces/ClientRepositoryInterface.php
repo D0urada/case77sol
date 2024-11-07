@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 interface ClientRepositoryInterface
 {
-    public function paginate(): LengthAwarePaginator;
+    public function paginate(int $int = 15): LengthAwarePaginator;
 
     public function search(string $searchQuery): Builder;
 

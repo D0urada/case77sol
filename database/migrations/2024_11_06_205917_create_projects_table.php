@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('installation_type');
             $table->string('location_uf');
             $table->json('equipment');
-            $table->softDeletes();
             $table->timestamps();
         });
     }
