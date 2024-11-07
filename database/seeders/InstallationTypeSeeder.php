@@ -10,6 +10,14 @@ class InstallationTypeSeeder extends Seeder
     /**
      * Run the database seeds.
      *
+     * Seeds the installation_types table with the following types:
+     *  - Fibrocimento (Madeira)
+     *  - Fibrocimento (Metálico)
+     *  - Cerâmico
+     *  - Metálico
+     *  - Laje
+     *  - Solo
+     *
      * @return void
      */
     public function run()

@@ -23,25 +23,54 @@ class ProjectFactory extends Factory
      */
     public function definition(): array
     {
-        // Pega os nomes de todos os equipamentos
+        // Get an array of all equipment names
         $equipments = Equipment::all()->pluck('name')->toArray();
 
-        // Seleciona de 1 a 5 equipamentos aleatórios
+        // Select a random set of equipment, with each equipment having a
+        // quantity between 1 and 10
         $randomEquipments = collect($equipments)
-            ->random(rand(1, 5)) // Pega entre 1 e 5 equipamentos aleatórios
+            ->random(rand(1, 5)) // Select a random number of equipment between 1 and 5
             ->mapWithKeys(function ($equipment) {
-                // Para cada equipamento, gera uma quantidade aleatória
-                return [$equipment => rand(1, 10)]; // Quantidade entre 1 e 10
+                // For each equipment, return an array with the equipment name
+                // as the key, and a random quantity between 1 and 10 as the value
+                return [$equipment => rand(1, 10)];
             })
             ->toArray();
 
         return [
+            /**
+             * Generate a random project name by combining a company name
+             * with the word "Project"
+             */
             'name' => $this->faker->company . ' Project',
+
+            /**
+             * Generate a random description for the project
+             */
             'description' => $this->faker->optional()->paragraph,
-            'client_id' => Client::factory(), // Associate a random client from the Client factory
-            'installation_type' => InstallationType::inRandomOrder()->first()->name, // Random installation type from the InstallationTypes table
-            'location_uf' => Uf::inRandomOrder()->first()->acronym, // Random UF from the Ufs table
-            'equipment' => $randomEquipments, // Get random equipment names
+
+            /**
+             * Associate a random client with the project. The client is
+             * created using the Client factory.
+             */
+            'client_id' => Client::factory(),
+
+            /**
+             * Set the installation type to a random installation type from
+             * the InstallationTypes table
+             */
+            'installation_type' => InstallationType::inRandomOrder()->first()->name,
+
+            /**
+             * Set the UF to a random UF from the Ufs table
+             */
+            'location_uf' => Uf::inRandomOrder()->first()->acronym,
+
+            /**
+             * Set the equipment to a random set of equipment, with each
+             * equipment having a random quantity between 1 and 10
+             */
+            'equipment' => $randomEquipments,
         ];
     }
 }

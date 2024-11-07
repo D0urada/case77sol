@@ -12,9 +12,9 @@ class EquipmentSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
-        // Define the list of equipment names
+        // List of equipment names to be inserted into the database
         $equipments = [
             'Módulo',
             'Inversor',

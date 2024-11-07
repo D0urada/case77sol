@@ -19,14 +19,30 @@ class ClientFactory extends Factory
      */
     public function definition(): array
     {
+        // CPFCNPJ: either a valid CPF or a valid CNPJ
+        // 50% chance of being a CPF, 50% of being a CNPJ
+        $cpfcnpj = $this->faker->randomElement([
+            // CPF
+            $this->faker->cpf(),
+            // CNPJ
+            $this->faker->cnpj(),
+        ]);
+
+        // Name: a random name
+        $name = $this->faker->name();
+
+        // Email: a unique safe email
+        $email = $this->faker->unique()->safeEmail();
+
+        // Phone: 50% chance of having a phone number, 50% of not having one
+        // if there is a phone number, it's a valid Brazilian phone number
+        $phone = $this->faker->optional()->brazilianPhoneNumber();
+
         return [
-            'cpfcnpj' => $this->faker->randomElement([
-                $this->faker->cpf(),
-                $this->faker->cnpj(),
-            ]),
-            'name' => $this->faker->name(),
-            'email' => $this->faker->unique()->safeEmail(),
-            'phone' => $this->faker->optional()->brazilianPhoneNumber(),
+            'cpfcnpj' => $cpfcnpj,
+            'name' => $name,
+            'email' => $email,
+            'phone' => $phone,
         ];
     }
 }

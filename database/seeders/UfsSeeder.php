@@ -14,6 +14,7 @@ class UfsSeeder extends Seeder
      */
     public function run()
     {
+        // List of all states of Brazil
         $ufs = [
             ['acronym' => 'AC', 'name' => 'Acre'],
             ['acronym' => 'AL', 'name' => 'Alagoas'],

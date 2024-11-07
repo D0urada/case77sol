@@ -11,6 +11,9 @@ class DatabaseSeeder extends Seeder
 {
     /**
      * Seed the application's database.
+     *
+     * This method will call the other seeders in the correct order, so that
+     * the tables are populated in the correct order.
      */
     public function run(): void
     {
