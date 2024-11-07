@@ -28,9 +28,9 @@ async function handleFormSubmit(event) {
     const formData = new FormData(form);
 
     // Adiciona a lista de equipamentos no formato array de objetos
-    const equipmentData = Object.keys(equipmentList).map(equipment => ({
+    const equipmentData = Object.keys(window.equipmentList).map(equipment => ({
         name: equipment,
-        quantity: equipmentList[equipment]
+        quantity: window.equipmentList[equipment]
     }));
 
     // Adiciona o array de objetos de equipamentos como uma string JSON ao FormData
