@@ -106,19 +106,6 @@
             <div id="quantity-fields" class="mt-4 space-y-2"></div>
         </div>
 
-        {{-- <!-- Select com Tailwind -->
-        <div>
-            <label for="equipment" class="block text-sm font-medium text-gray-700">Escolha um Equipamento</label>
-            <select id="equipment" name="equipment" class="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                <option value="" disabled selected>Selecione um equipamento</option>
-                <option value="Equipamento 1">Equipamento 1</option>
-                <option value="Equipamento 2">Equipamento 2</option>
-                <option value="Equipamento 3">Equipamento 3</option>
-            </select>
-        </div> --}}
-
-
-
         <div class="w-full">
             <x-input-label for="description" :value="__('Descrição')" />
             <x-textarea

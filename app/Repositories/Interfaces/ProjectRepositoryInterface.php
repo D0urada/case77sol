@@ -14,9 +14,11 @@ interface ProjectRepositoryInterface
 
     public function all(): Collection;
 
+    public function findById(int $id): ?Project;
+
     public function create(array $data): Project;
 
-    public function update(Project $project, array $data);
+    public function update(array $data, Project $project): ?Project;
 
     public function delete(Project $project): void;
 }

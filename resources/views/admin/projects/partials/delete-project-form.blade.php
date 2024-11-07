@@ -15,7 +15,7 @@
     >{{ __('Excluir Projeto') }}</x-danger-button>
 
     <x-modal name="confirm-project-deletion" focusable>
-        <form method="post" id="delete-project-form" action="{{ route('admin.projects.destroy', 1) }}" class="p-6">
+        <form method="post" id="delete-project-form" action="{{ route('admin.projects.destroy', $project->id) }}" class="p-6">
             @csrf
             @method('delete')
 
@@ -23,22 +23,22 @@
                 {{ __('Tem certeza que quer excluir o Projeto?') }}
                 <br/>
             </h2>
-{{--
+
             <ul class="max-w-md space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400">
                 <li>
-                    {{ $client->name }}
+                    {{ $project->name }}
                 </li>
                 <li>
-                    {{ $client->cpfcnpj }}
+                    {{ $project->client->name }}
                 </li>
                 <li>
-                    {{ $client->phone }}
+                    {{ $project->client->cpfcnpj }}
                 </li>
-            </ul> --}}
+            </ul>
 
-            {{-- <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                {{ __('Caso exclua o Cliente, os Projetos asociados a ele tambem serão excluidos.') }}
-            </p> --}}
+            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                {{ __('Caso exclua o Projeto, o cliente permanecerá.') }}
+            </p>
 
             <div class="flex justify-end mt-6">
                 <x-secondary-button x-on:click="$dispatch('close')">

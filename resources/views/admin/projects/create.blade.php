@@ -6,16 +6,13 @@
     </x-slot>
 
     <x-section class="!py-12">
+        <x-alert/>
+
         <div class="max-full">
             @include('admin.projects.partials.create-project-form')
         </div>
     </x-section>
 
-    {{-- <x-section class="!py-0 !pt-4 !pb-12">
-        <div class="max-w-xl">
-            @include('admin.projects.partials.delete-project-form')
-        </div>
-    </x-section> --}}
 </x-admin-layout>
 
 

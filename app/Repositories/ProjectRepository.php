@@ -72,6 +72,21 @@ class ProjectRepository implements ProjectRepositoryInterface
     }
 
     /**
+     * Retrieve a client by ID from the repository.
+     *
+     * This method fetches a client by its ID. If no client is found,
+     * it returns null.
+     *
+     * @param int $id The ID of the client to retrieve.
+     *
+     * @return Client|null The client instance or null if not found.
+     */
+    public function findById(int $id): ?Project
+    {
+        return Project::with('client')->find($id);
+    }
+
+    /**
      * Create a new project in the repository.
      *
      * This method creates a new project in the repository from the given data.
@@ -85,7 +100,7 @@ class ProjectRepository implements ProjectRepositoryInterface
         return Project::create($data);
     }
 
-    public function update(Project $project, array $data)
+    public function update(array $data, Project $project): ?Project
     {
         // Update the project with the given data and return the result
         return $project->update($data);

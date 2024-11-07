@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\StoreProjectRequest;
+use App\Http\Requests\Admin\UpdateProjectRequest;
 use App\Models\Client;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\ProjectRepositoryInterface;
@@ -16,6 +17,7 @@ use Illuminate\View\View;
 use Throwable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\JsonResponse;
 
 class ProjectController extends Controller
 {
@@ -141,39 +143,121 @@ class ProjectController extends Controller
         }
     }
 
-
-    public function show(Project $project)
+    /**
+     * Display the specified project.
+     *
+     * This method handles the incoming request to show a project.
+     * It uses the project repository to retrieve the project data
+     * and renders the projects show view with the project data.
+     * If the project is not found, it returns a JSON response with an error message.
+     *
+     * @param int $projectId The project ID to retrieve.
+     *
+     * @return View The projects show view with the project data.
+     */
+    public function show(int $projectId): View
     {
-        return view('admin.projects.show', compact('project'));
+        $project = $this->projectRepository->findById($projectId);
+
+        // Retrieve all clients
+        $clients = $this->projectRepository->all();
+
+        // Retrieve all UFs
+        $ufList = $this->ufRepository->all();
+
+        // Retrieve all equipment
+        $equipmentList = $this->equipmentRepository->all();
+
+        // Retrieve all installation types
+        $installationTypeList = $this->installationTypeRepository->all();
+
+        $initialEquipmentList = json_encode($project->equipment);
+
+        if (!$project) {
+            // Return a JSON response with an error message
+            return response()->json([
+                'message' => 'Projeto não encontrado.',
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // Render the projects show view with the project data
+        return view('admin.projects.show', compact('project', 'clients', 'ufList', 'equipmentList', 'initialEquipmentList', 'installationTypeList'));
     }
 
 
-    public function edit(Project $project)
+    public function update(Request $request, Project $project): JsonResponse
     {
-        $clients = Client::all();
-        return view('admin.projects.edit', compact('project', 'clients'));
+        dd($request);
+
+        try {
+            $validatedData = $request->validated();
+
+            $existingProject = $this->projectRepository->findById($project->id);
+
+            if (!$existingProject) {
+                return response()->json([
+                    'message' => 'Projeto não foi encontrado.',
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            $updatedProject = $this->projectRepository->update($validatedData, $project);
+
+            return response()->json([
+                'message' => 'Projeto atualizado com sucesso!',
+                'project' => $updatedProject,
+            ], Response::HTTP_OK);
+
+        } catch (Throwable $exception) {
+            $statusCode = $exception instanceof QueryException
+                ? Response::HTTP_UNPROCESSABLE_ENTITY
+                : Response::HTTP_INTERNAL_SERVER_ERROR;
+
+            return response()->json([
+                'message' => 'Erro ao editar o projeto.',
+                'error' => $exception->getMessage(),
+            ], $statusCode);
+        }
     }
 
-
-    public function update(Request $request, Project $project)
+    /**
+     * Remove the specified project from storage.
+     *
+     * This method handles the incoming request to delete a project.
+     * It attempts to delete the project using the project repository.
+     * If the project is not found, it redirects to the projects list route
+     * with an error message. If the deletion fails, it returns a JSON response
+     * with an error message and the appropriate HTTP status code.
+     *
+     * @param int $projectId The project ID to delete.
+     *
+     * @return RedirectResponse The redirect response with a success or error message.
+     */
+    public function destroy(int $projectId): RedirectResponse
     {
-        $request->validate([
-            'client_id' => 'required|exists:clients,id',
-            'uf' => 'required',
-            'installation_type' => 'required',
-        ]);
+        try {
+            // Retrieve the project instance from the project repository
+            $project = $this->projectRepository->findById($projectId);
 
-        $this->projectRepository->update($project, $request->all());
+            if (!$project) {
+                // Return a redirect response with an error message
+                return redirect()->route('admin.projects.index')
+                    ->with('error', 'Projeto não encontrado.');
+            }
 
-        return redirect()->route('projects.index');
-    }
+            // Delete the project using the project repository
+            $this->projectRepository->delete($project);
 
+            // Return a redirect response with a success message
+            return redirect()->route('admin.projects.index')
+                ->with('success', 'Projeto excluido com sucesso!');
 
-    public function destroy(Project $project)
-    {
-        $this->projectRepository->delete($project);
-
-        return redirect()->route('projects.index');
+        } catch (Throwable $exception) {
+            // Handle the exception and return a JSON response with an error message
+            return response()->json([
+                'message' => 'Erro ao remover o projeto.',
+                'error' => $exception->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
 }
