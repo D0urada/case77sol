@@ -80,10 +80,10 @@
 
 ### Observações:
 
-- A função de edição do formulário precisava de um tratamento no frontend, que não consegui concluir, para salvar os equipamentos corretamente e enviá-los para o backend.
+- A função de edição do formulário precisava de um tratamento no front-end, que não consegui concluir, para salvar os equipamentos corretamente e enviá-los para o back-end.
 
-- Para o restante, tentei seguir padrões com os quais já trabalhei no Laravel, como o uso de *repository* e *interface*. Pessoalmente, atualmente, gosto de utilizar o Blade para componentização e prefiro manter a modularização do frontend mais simples. Não vejo necessidade de usar Vue para um projeto mais simples.
+- Quanto ao restante, tentei seguir os padrões com os quais já trabalhei no Laravel, como o uso de repositório e interface. Pessoalmente, atualmente, gosto de utilizar o Blade para componentização e prefiro manter a modularização do front-end mais simples. Não vejo necessidade de usar Vue ou React em um projeto mais sucinto.
 
-- Também utilizei o Tailwind, que já vem no Laravel e gosto bastante, e a biblioteca open-source de componentes Flowbite.
+- Também utilizei o Tailwind, que já vem no Laravel e do qual gosto bastante, além da biblioteca open-source de componentes Flowbite.
 
-- Aproveitei que gostod e retornar a maior parte do back como response, mesmo em uma aplicação sem separação de front e back, e apliquei oswagger a alguns retornos de CRUD que eram de response e não redirect ou view.
+- Aproveitei o fato de eu gosto de retornar a maior parte do back-end como response, mesmo em uma aplicação sem separação entre front-end e back-end, e apliquei o Swagger a alguns retornos de CRUD, ja que não tinha rotas de API propriamente ditas.
