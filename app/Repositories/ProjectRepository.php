@@ -26,14 +26,46 @@ class ProjectRepository implements ProjectRepositoryInterface
         return Project::with('client')->paginate($perPage);
     }
 
+    /**
+     * Retrieve paginated projects from the repository by searching for the given query.
+     *
+     * This method retrieves projects from the repository by searching for the given query
+     * and returns the results as a paginated list of project instances.
+     *
+     * @param string $searchQuery The search query to filter the results by.
+     * @param int $perPage The number of items to display per page. Defaults to 15.
+     *
+     * @return LengthAwarePaginator The paginated list of projects.
+     */
     public function search(string $searchQuery, int $perPage = 15): LengthAwarePaginator
     {
-        return Project::with('client')
-            ->where('name', 'like', '%'.$searchQuery.'%')
-            ->orWhere('description', 'like', '%'.$searchQuery.'%')
-            ->paginate($perPage);
+        // Search projects by name, description, location UF, installation type, or client name
+        $query = Project::with('client')
+            ->where(function($query) use ($searchQuery) {
+                // Search by name, description, location UF, or installation type
+                $query->where('name', 'like', '%'.$searchQuery.'%')
+                    ->orWhere('description', 'like', '%'.$searchQuery.'%')
+                    ->orWhere('location_uf', 'like', '%'.$searchQuery.'%')
+                    ->orWhere('installation_type', 'like', '%'.$searchQuery.'%');
+            })
+            ->orWhereHas('client', function($query) use ($searchQuery) {
+                // Search by client name
+                $query->where('name', 'like', '%'.$searchQuery.'%');
+            });
+
+        // Return the paginated results
+        return $query->paginate($perPage);
     }
 
+
+    /**
+     * Retrieve all projects from the repository.
+     *
+     * This method retrieves all projects from the repository and returns them
+     * as a collection of project instances.
+     *
+     * @return Collection The collection of all projects.
+     */
     public function all(): Collection
     {
         return Project::all();
