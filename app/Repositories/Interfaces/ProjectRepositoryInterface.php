@@ -18,8 +18,6 @@ interface ProjectRepositoryInterface
 
     public function create(array $data): Project;
 
-    public function update(array $data, Project $project): ?Project;
-
     public function delete(Project $project): void;
 }
 

@@ -2,11 +2,11 @@
 
 namespace App\Repositories;
 
-use App\Models\Project;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use App\Repositories\Interfaces\ProjectRepositoryInterface;
+use App\Models\Project;
 
 class ProjectRepository implements ProjectRepositoryInterface
 {
@@ -100,10 +100,27 @@ class ProjectRepository implements ProjectRepositoryInterface
         return Project::create($data);
     }
 
-    public function update(array $data, Project $project): ?Project
+    /**
+     * Update an existing project in the repository.
+     *
+     * @param array $data The array of data to update the project from.
+     * @param Project $project The project instance to be updated.
+     *
+     * @return Project The updated project.
+     */
+    public function update(array $data, Project $project): Project
     {
-        // Update the project with the given data and return the result
-        return $project->update($data);
+        // Retrieve the project from the repository using the provided project ID
+        $project = $this->findById($project->id);
+
+        // Update the project with the given data
+        $project->update($data);
+
+        // Save the updated project
+        $project->save();
+
+        // Return the updated project
+        return $project;
     }
 
     public function delete(Project $project): void

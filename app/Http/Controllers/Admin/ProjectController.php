@@ -187,8 +187,6 @@ class ProjectController extends Controller
 
     public function update(Request $request, Project $project): JsonResponse
     {
-        dd($request);
-
         try {
             $validatedData = $request->validated();
 
