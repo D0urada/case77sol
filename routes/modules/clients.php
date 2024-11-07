@@ -11,6 +11,7 @@ Route::prefix('clients')->name('clients.')->group(function () {
     Route::get('/{client}/show', [ClientController::class, 'show'])->name('show');
     Route::put('/{client}', [ClientController::class, 'update'])->name('update');
     Route::delete('/{client}', [ClientController::class, 'destroy'])->name('destroy');
+    Route::get('/search', [ClientController::class, 'search'])->name('search');
 });
 
 

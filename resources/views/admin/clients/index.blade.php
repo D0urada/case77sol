@@ -16,14 +16,14 @@
             {{ __('Cadastrar Cliente') }}
         </x-secondary-button>
 
-        @include('admin.clients.partials.search')
+        @include('admin.clients.partials.search-client')
 
-        @include('admin.clients.partials.table', ['clients' => $clients])
+        @include('admin.clients.partials.table-client', ['clients' => $clients])
 
         {{ $clients->links() }}
     </x-section>
 
-    @include('admin.clients.partials.create-modal')
+    @include('admin.clients.partials.create-client-modal')
 
 </x-admin-layout>
 
